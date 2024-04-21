@@ -122,7 +122,7 @@ using (var scope = app.Services.CreateScope())
 
     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
     var userManager = services.GetRequiredService<UserManager<AuthUser>>();
-    var peakEnergyRepository = services.GetRequiredService<PeakEnergyConsumptionRepository>();
+    var peakEnergyRepository = services.GetRequiredService<IPeakEnergyConsumptionRepository>();
 
     await RolesSeeder.SeedRolesAsync(roleManager);
     await TestUserSeeder.SeedTestUserAsync(applicationContext, userManager);
