@@ -4,6 +4,7 @@ using EnergyEfficiencyBE.Context.Seeders;
 using EnergyEfficiencyBE.MappingProfiles;
 using EnergyEfficiencyBE.Models.Entities;
 using EnergyEfficiencyBE.Repositories;
+using EnergyEfficiencyBE.Repositories.EfficiencyClass;
 using EnergyEfficiencyBE.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -56,10 +57,12 @@ builder.Services.AddAuthorization();
 builder.Services.AddAutoMapper(typeof(MappingProfiles));
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IPeakEnergyConsumptionRepository, PeakEnergyConsumptionRepository>();
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IEnergyEfficiencyClassService, EnergyEfficiencyClassService>();
 
 builder.Services.ConfigureOptions<JwtOptionsSetup>();
 builder.Services.ConfigureOptions<JwtBearerOptionsSetup>();
@@ -119,9 +122,11 @@ using (var scope = app.Services.CreateScope())
 
     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
     var userManager = services.GetRequiredService<UserManager<AuthUser>>();
+    var peakEnergyRepository = services.GetRequiredService<PeakEnergyConsumptionRepository>();
 
     await RolesSeeder.SeedRolesAsync(roleManager);
     await TestUserSeeder.SeedTestUserAsync(applicationContext, userManager);
+    await PeakEnergyConsumptionTableSeeder.SeedTableAsync(peakEnergyRepository);
 }
 
 app.UseSwagger();

@@ -1,4 +1,5 @@
 ﻿using EnergyEfficiencyBE.Models.Entities;
+using EnergyEfficiencyBE.Models.Entities.EfficiencyClass;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
@@ -11,11 +12,13 @@ namespace EnergyEfficiencyBE.Context
         }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<PeakEnergyConsumption> PeakEnergyConsumptionTable{ get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
             ConfigureUser(modelBuilder);
+            ConfigurePeakEnergyConsumption(modelBuilder);
         }
 
         private void ConfigureUser(ModelBuilder modelBuilder)
@@ -32,6 +35,24 @@ namespace EnergyEfficiencyBE.Context
 
                 entity.Property(e => e.Phone).HasMaxLength(255);
                 entity.Property(e => e.Telegram).HasMaxLength(255);
+            });
+        }
+
+        private void ConfigurePeakEnergyConsumption(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<PeakEnergyConsumption>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.BuildingType).IsRequired();
+
+                entity.Property(e => e.StoriesMin).IsRequired();
+
+                entity.Property(e => e.StoriesMax);
+
+                entity.Property(e => e.TemperatureZone).IsRequired();
+
+                entity.Property(e => e.Formula).IsRequired();
             });
         }
     }
